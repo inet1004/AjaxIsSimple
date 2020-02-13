@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title> loadDoc.html </title>
+</head>
+
+<body onload="loadDoc()">
+	<!-- <button type="button" onclick="loadDoc()">Click</button> -->
+	<div id="show"></div>
+	<script>
+		var parent = document.getElementById("show");
+		function loadDoc() {
+			var xhtp = new XMLHttpRequest();
+			xhtp.onreadystatechange = function () {
+				if (xhtp.readyState == 4 && xhtp.status == 200) {
+					callBack(xhtp);
+				}
+			}
+			xhtp.open('get', 'EmpServletJSON', true); // true:Asynchronous
+			xhtp.send();
+		} // end of loadDoc()
+		function callBack(xhtp) {
+			var result = JSON.parse(xhtp.responseText);
+			var resultAry = result.employees;
+			var $table, $tr, $td, $text;
+			$table = document.createElement("table");
+			$table.setAttribute("border", 1);
+
+			$tr = document.createElement("tr");
+			for (field in resultAry[0]) {
+				$text = document.createTextNode(field.toUpperCase());
+				$td = document.createElement("th");
+				$td.appendChild($text);
+				$tr.appendChild($td);
+			}
+			$text = document.createTextNode("추가");
+			$td = document.createElement("td");
+			$td.appendChild($text);
+			$tr.appendChild($td);
+			
+			$table.appendChild($tr);
+
+			for (idx in resultAry) {
+				$tr = document.createElement("tr");
+				$tr.setAttribute("id", resultAry[idx].empId);
+				for (field in resultAry[idx]) {
+					$text = document.createTextNode(resultAry[idx][field]);
+					$td = document.createElement("td");
+					$td.appendChild($text);
+					$tr.appendChild($td);
+				}
+				// button
+				$text = document.createTextNode("Click");
+				$button = document.createElement("button");
+				$button.onclick = function() {
+					console.log(this.parentNode.parentNode);
+					this.parentNode.parentNode.remove();
+				}
+				$button.appendChild($text);
+				$td = document.createElement("td");
+				$td.appendChild($button);
+				$tr.appendChild($td);
+				
+				$table.appendChild($tr);
+			}
+			parent.appendChild($table);
+		} // end of callBack
+
+	</script>
+</body>
+
+</html>

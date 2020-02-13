@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title> loadDoc.html </title>
+</head>
+
+<body>
+	<div id="show"></div>
+	<button type="button" onclick="loadDoc()">Click</button>
+	<script>
+		function loadDoc() {
+			var xhtp = new XMLHttpRequest();
+			xhtp.onreadystatechange = function () {
+				if (xhtp.readyState == 4 && xhtp.status == 200) {
+					callBack(xhtp);
+				}
+			}
+			xhtp.open('get', 'EmpServletJSON', true); // true:Asynchronous
+			xhtp.send();
+		} // end of loadDoc()
+		function callBack(xhtp) {
+			var result = JSON.parse(xhtp.responseText);
+			console.log(result);
+			/*var text = "";
+			var result = xhtp.responseXML;
+			var x = result.getElementsByTagName("employee");
+			for (var i = 0; i < x.length; i++) {
+				text += x[i].childNodes[1].childNodes[0].nodeValue + ", "
+					+ x[i].childNodes[3].childNodes[0].nodeValue + "<br>";
+			}
+			document.getElementById("show").innerHTML = text;*/
+		} // end of callBack
+
+	</script>
+</body>
+
+</html>
