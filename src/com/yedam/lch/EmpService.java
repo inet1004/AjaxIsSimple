@@ -43,4 +43,7 @@ public abstract class EmpService {
 	}
 
 	public abstract List<EmpDTO> selectEmpAll();
+	public abstract void deleteEmp(int eId);
+	public abstract int insertEmp(EmpDTO emp);
+	
 }

@@ -48,6 +48,7 @@ public class EmpServletJSON extends HttpServlet {
 			obj.put("lastName", emp.getLastName());
 			obj.put("salary", emp.getSalary());
 			obj.put("email", emp.getEmail());
+			obj.put("employeeId", emp.getEmployeeId());
 			ary.add(obj);
 		}
 		out.print(ary.toString());

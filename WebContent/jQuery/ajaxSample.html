@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ajaxSample.html</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+	// ajax를 jQuery사용
+	$(document).ready(
+			function() {
+				// $.each();
+				$.ajax({
+					url : "../EmpServletJSON",
+					dataType : "json",
+					success : function(result) { // 날아오는 결과값을 result에 담아준
+						// var ret =JSON.parse(result); 할 필요 없음 , dataType:"json", 선언이 알아서 해줌
+						console.log(result);
+						callBackFunc(result);
+					}
+				});
+
+				function callBackFunc(obj) {
+					var $table, $tr;
+					$table = $("<table>").attr("border", 1).attr("id", "main");
+					$(obj).each(
+							function(i, o) {
+								$tr = $("<tr>").attr("id", o.employeeId)
+								$tr.mouseover(callMover);
+								$tr.mouseout(callMout);
+								$tr.append( // append 안에는 for구문등이 올수 없음//매개 변수만 올수 있음
+								$("<td>").text(o.employeeId), $("<td>").text(
+										o.firstName), $("<td>")
+										.text(o.lastName), $("<td>").text(
+										o.salary), $("<td>")
+										.html(
+												$("<button>").text("삭제").click(
+														delFunc)));
+								$table.append($tr);
+							})
+					$("#show").append($table);
+				}
+
+				function callMover() {
+					$(this).css("backgroundColor", "yellow");
+				}
+
+				function callMout() {
+					$(this).css("backgroundColor", "");
+				}
+
+				function delFunc() {
+					var trTag = $(this).parent().parent();
+					var empId = trTag.attr("id");
+					$.ajax({
+						url : "../DeleteEmpServlet",
+						data : { "empId" : empId },
+						success : function() {
+							console.log("success")
+						}
+					});
+					$(this).parent().parent().remove();
+				}
+
+				//전송 클릭
+				$("#submit").click(function() {
+					var frm = $("[name='frm1']")
+					$.ajax({
+						url : frm.attr("action"),
+						data : frm.serialize(), //serialize() 여러 종류의 값들을 다 가져옴
+						success : function(result) {
+							console.log(result);
+							var newEmpId = result;
+							// 화면에 입력된 데이터가 나타나도록 추가.
+							createNewEmp(newEmpId);
+						}
+					});
+				})
+
+				function createNewEmp(empId) {
+					var p = $("#main");
+					var frm = $("form[input]");
+					$tr = $("<tr>").attr("id", empId);
+					$tr.mouseover(callMover).mouseout(callMout);
+					$tr.append( // append 안에는 for구문등이 올수 없음//매개 변수만 올수 있음
+					$("<td>").text(empId), $("<td>").text($("#lName").val()),
+							$("<td>").text($("#email").val()), $("<td>")
+									.text(0), $("<td>").html(
+									$("<button>").text("삭제").click(delFunc)));
+					p.append($tr);
+					$("#lName").val("");
+					$("#email").val("");
+					$("#hireDate").val("");
+					$("#lName").focus();
+				}
+			})
+</script>
+</head>
+<body>
+	<form name="frm1" action="../InsertEmpServlet">
+		<table border=1>
+			<tr>
+				<td>lastName:</td>
+				<td><input type="text" id="lName" name="lName"></td>
+			</tr>
+			<tr>
+				<td>email:</td>
+				<td><input type="text" id="email" name="email"></td>
+			</tr>
+			<tr>
+				<td>HireDate:</td>
+				<td><input type="text" id="hireDate" name="hireDate"></td>
+			</tr>
+			<tr>
+				<td>JobId:</td>
+				<td><input type="text" id="IT_PROG" name="jobId"
+					value="IT_PROG"></td>
+			</tr>
+			<tr>
+				<td align="center" colspan='2'><input type="button" id="submit"
+					value="전송"></td>
+			</tr>
+		</table>
+	</form>
+	<p id="show"></p>
+</body>
+</html>

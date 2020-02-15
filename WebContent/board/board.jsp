@@ -62,7 +62,7 @@
 			$table = document.createElement("table");
 			for(i in result.rList){
 				$tr = document.createElement("tr");
-				for(r of rtitle){
+				for(r in rtitle){
 					$text = document.createTextNode(result.rList[i][r]);
 					$td = document.createElement("td");
 					$td.appendChild($text);
@@ -72,6 +72,7 @@
 				$table.setAttribute("border", 1);
 			}
 			rep.appendChild($table);
+			
 
 		}
 	</script>
